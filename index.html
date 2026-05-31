@@ -1,90 +1,204 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WA Ahli Gizi</title>
+    <title>WA Ahli Gizi - Multi Mode</title>
     <style>
         :root {
-            --primary-color: #25D366; /* Warna khas WhatsApp */
-            --primary-dark: #128C7E;
-            --secondary-color: #DCF8C6;
-            --text-dark: #1F2937;
-            --text-light: #6B7280;
-            --bg-color: #F3F4F6;
-            --card-bg: #FFFFFF;
-            --border-radius: 12px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            /* --- DARK MODE (AI Style) - Default --- */
+            --bg-body: #000000;
+            --bg-card: #111111;
+            --bg-input: #1f1f1f;
+            --text-main: #ececec;
+            --text-muted: #9ca3af;
+            --border-color: #2a2a2a;
+            --header-bg: rgba(0,0,0,0.8);
+            --accent-color: #10a37f; /* Emerald AI Green */
+            --accent-hover: #0d8a6c;
+            --btn-text: #ffffff;
+            
+            /* Status Colors (Text/Badge) */
+            --status-text-badge: #000000; 
+            
+            /* Shadows */
+            --shadow-card: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* --- LIGHT MODE (Normal Style) - Triggered by data-theme="light" --- */
+        [data-theme="light"] {
+            --bg-body: #F3F4F6;
+            --bg-card: #FFFFFF;
+            --bg-input: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #e5e7eb;
+            --header-bg: rgba(255,255,255,0.9);
+            --accent-color: #25D366; /* WhatsApp Green */
+            --accent-hover: #128C7E;
+            --btn-text: #ffffff;
+            
+            /* Status Colors */
+            --status-text-badge: #ffffff;
+            
+            /* Shadows */
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Transisi Halus saat ganti mode */
+        body, header, .card, input, select, textarea, button, .bmi-status, #bmi-result {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            outline: none;
         }
 
         body {
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--text-dark);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             line-height: 1.6;
-            padding-bottom: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Header */
         header {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-            color: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
+            padding: 1.5rem 1rem 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            gap: 0.5rem;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
         }
 
         header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-main);
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
         }
 
+        header h1 svg {
+            color: var(--accent-color);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--bg-input);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
         header p {
-            font-size: 0.95rem;
-            opacity: 0.9;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Verification Badge */
+        .btn-verify {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background-color: rgba(16, 163, 127, 0.1);
+            border: 1px solid rgba(16, 163, 127, 0.3);
+            border-radius: 20px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        [data-theme="light"] .btn-verify {
+            background-color: rgba(37, 211, 102, 0.1);
+            border-color: rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-verify:hover {
+            background-color: rgba(16, 163, 127, 0.2);
+        }
+        .btn-verify svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
         }
 
         /* Container */
         .container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 0 1rem;
+            width: 100%;
+            padding: 1rem;
+            flex: 1;
         }
 
         /* Cards */
         .card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
+            background-color: var(--bg-card);
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow);
-            border: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
         }
 
         .section-title {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--primary-dark);
+            color: var(--text-main);
             margin-bottom: 1rem;
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 0.5rem;
             display: flex;
             align-items: center;
             gap: 8px;
+            opacity: 0.9;
+        }
+
+        .section-title svg {
+            stroke: var(--text-muted);
+            width: 18px;
+            height: 18px;
         }
 
         /* Form Elements */
@@ -95,9 +209,9 @@
         label {
             display: block;
             margin-bottom: 0.5rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            color: var(--text-dark);
-            font-size: 0.9rem;
+            color: var(--text-muted);
         }
 
         input[type="text"],
@@ -106,18 +220,36 @@
         select,
         textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
+            padding: 0.85rem;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            color: var(--text-main);
+            font-size: 0.95rem;
             font-family: inherit;
         }
 
         input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+        }
+        
+        [data-theme="dark"] input:focus, 
+        [data-theme="dark"] select:focus, 
+        [data-theme="dark"] textarea:focus {
+            box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+        }
+        
+        [data-theme="light"] input:focus, 
+        [data-theme="light"] select:focus, 
+        [data-theme="light"] textarea:focus {
             box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+        }
+
+        input[readonly] {
+            background-color: var(--bg-body);
+            opacity: 0.7;
+            cursor: default;
         }
 
         .row {
@@ -129,123 +261,152 @@
             flex: 1;
         }
 
-        /* BMI Result Box */
+        /* BMI Result */
         #bmi-result {
             margin-top: 1rem;
             padding: 1rem;
-            background-color: #f9fafb;
+            background-color: var(--bg-body);
             border-radius: 8px;
             text-align: center;
-            display: none; /* Hidden by default */
-            border: 1px solid #e5e7eb;
+            display: none;
+            border: 1px solid var(--border-color);
         }
 
         .bmi-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-dark);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
         }
 
         .bmi-status {
             font-weight: 600;
             padding: 4px 12px;
             border-radius: 20px;
-            color: white;
             display: inline-block;
             margin-top: 5px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Action Button */
+        /* Submit Button */
         .btn-submit {
             display: flex;
             width: 100%;
             padding: 1rem;
-            background-color: var(--primary-color);
-            color: white;
+            background-color: var(--accent-color);
+            color: var(--btn-text);
             border: none;
             border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            text-align: center;
+            transition: background-color 0.2s;
             text-decoration: none;
-            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.3);
             align-items: center;
             justify-content: center;
             gap: 10px;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .btn-submit:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
+            background-color: var(--accent-hover);
         }
 
         .btn-icon {
-            width: 24px;
-            height: 24px;
-            fill: white;
+            width: 20px;
+            height: 20px;
+            fill: var(--btn-text);
         }
 
-        /* Toast Notification */
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
-            transform: translateX(-50%);
-            background-color: #ef4444; /* Red for error */
-            color: white;
+            transform: translateX(-50%) translateY(20px);
+            background-color: #262626;
+            color: #fff;
             padding: 12px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 50px;
+            border: 1px solid #404040;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
             font-weight: 500;
             text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        [data-theme="light"] .toast {
+            background-color: #ef4444;
+            border: none;
+            color: white;
         }
 
         .toast.show {
             opacity: 1;
             visibility: visible;
-            bottom: 40px;
+            transform: translateX(-50%) translateY(0);
         }
 
         /* Footer */
         footer {
             text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-top: 2rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 1.5rem;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
         }
 
-        /* Responsive */
+        .footer-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--text-muted);
+        }
+
         @media (max-width: 480px) {
-            .row {
-                flex-direction: column;
-                gap: 0;
-            }
+            .row { flex-direction: column; gap: 0; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>
-            <!-- Icon Leaf/Health -->
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-                <path d="M12 2.69v9.31"></path>
+        <div class="header-top">
+            <h1>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                    <path d="M12 2.69v9.31"></path>
+                </svg>
+                WA Ahli Gizi
+            </h1>
+            
+            <!-- Tombol Ganti Mode (Dark/Light) -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Ganti Tema">
+                <!-- Icon Matahari (Muncul di Dark Mode) -->
+                <svg id="icon-sun" viewBox="0 0 24 24" style="display: none;">
+                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+                </svg>
+                <!-- Icon Bulan (Muncul di Light Mode) -->
+                <svg id="icon-moon" viewBox="0 0 24 24">
+                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                </svg>
+            </button>
+        </div>
+
+        <p>Konsultasi Gizi Terpercaya</p>
+        
+        <a href="https://satusehat.kemkes.go.id/sdmk/nakes/WA00000887089023" target="_blank" class="btn-verify">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1.06 13.54L7.4 12l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41-5.64 5.66z"/>
             </svg>
-            WA Ahli Gizi
-        </h1>
-        <p>Isi data diri Anda dan kirim langsung via WhatsApp</p>
+            Terverifikasi Kemkes
+        </a>
     </header>
 
     <div class="container">
@@ -254,13 +415,13 @@
             <!-- Data Diri -->
             <section class="card">
                 <div class="section-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    Data Diri Pasien
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Identitas Pasien
                 </div>
                 
                 <div class="form-group">
                     <label for="fullName">Nama Lengkap</label>
-                    <input type="text" id="fullName" placeholder="Contoh: Budi Santoso" required>
+                    <input type="text" id="fullName" placeholder="Masukkan nama lengkap..." required>
                 </div>
 
                 <div class="row">
@@ -280,15 +441,15 @@
 
                 <div class="form-group">
                     <label for="ageDisplay">Usia</label>
-                    <input type="text" id="ageDisplay" value="-" readonly style="background-color: #f3f4f6; color: #6b7280; cursor: not-allowed;">
+                    <input type="text" id="ageDisplay" value="-" readonly>
                 </div>
             </section>
 
             <!-- Data Antropometri -->
             <section class="card">
                 <div class="section-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"></path></svg>
-                    Ukuran Tubuh (Antropometri)
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"></path></svg>
+                    Ukuran Tubuh
                 </div>
 
                 <div class="row">
@@ -302,9 +463,8 @@
                     </div>
                 </div>
 
-                <!-- Live BMI Result -->
                 <div id="bmi-result">
-                    <span style="font-size: 0.9rem; color: #666;">Indeks Massa Tubuh (IMT)</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Indeks Massa Tubuh</span>
                     <div class="bmi-value" id="bmiValue">0.0</div>
                     <div class="bmi-status" id="bmiStatus">Normal</div>
                 </div>
@@ -313,61 +473,85 @@
             <!-- Data Kesehatan & Tujuan -->
             <section class="card">
                 <div class="section-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                    Kondisi & Tujuan
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    Riwayat & Tujuan
                 </div>
 
                 <div class="form-group">
                     <label for="activity">Tingkat Aktivitas</label>
                     <select id="activity">
-                        <option value="Jarang Olahraga (Sedentary)">Jarang Olahraga (Sedentary)</option>
-                        <option value="Aktivitas Ringan (1-3x/minggu)">Aktivitas Ringan (1-3x/minggu)</option>
-                        <option value="Aktivitas Sedang (3-5x/minggu)">Aktivitas Sedang (3-5x/minggu)</option>
-                        <option value="Sangat Aktif (6-7x/minggu)">Sangat Aktif (6-7x/minggu)</option>
+                        <option value="Jarang Olahraga (Sedentary)">Jarang Olahraga</option>
+                        <option value="Aktivitas Ringan (1-3x/minggu)">Ringan (1-3x/minggu)</option>
+                        <option value="Aktivitas Sedang (3-5x/minggu)">Sedang (3-5x/minggu)</option>
+                        <option value="Sangat Aktif (6-7x/minggu)">Sangat Aktif</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="goal">Tujuan Konsultasi</label>
+                    <label for="goal">Tujuan</label>
                     <select id="goal">
-                        <option value="Menurunkan Berat Badan (Diet)">Menurunkan Berat Badan (Diet)</option>
-                        <option value="Menambah Berat Badan">Menambah Berat Badan</option>
-                        <option value="Mempertahankan Berat Badan">Mempertahankan Berat Badan</option>
-                        <option value="Meningkatkan Massa Otot">Meningkatkan Massa Otot</option>
-                        <option value="Penyakit Khusus (Diabetes, Asam Urat, dll)">Penyakit Khusus (Diabetes, Asam Urat, dll)</option>
-                        <option value="Kesehatan Umum / Anak">Kesehatan Umum / Anak</option>
+                        <option value="Menurunkan Berat Badan (Diet)">Menurunkan BB</option>
+                        <option value="Menambah Berat Badan">Menambah BB</option>
+                        <option value="Mempertahankan Berat Badan">Mempertahankan BB</option>
+                        <option value="Meningkatkan Massa Otot">Meningkatkan Otot</option>
+                        <option value="Penyakit Khusus (Diabetes, Asam Urat, dll)">Penyakit Khusus</option>
+                        <option value="Kesehatan Umum / Anak">Kesehatan Umum</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="complaints">Keluhan / Riwayat Penyakit</label>
-                    <textarea id="complaints" rows="4" placeholder="Tuliskan secara detail keluhan, riwayat alergi makanan, atau penyakit yang diderita..."></textarea>
+                    <textarea id="complaints" rows="4" placeholder="Jelaskan keluhan, alergi, atau riwayat penyakit Anda di sini..."></textarea>
                 </div>
             </section>
 
             <button type="submit" class="btn-submit">
-                <!-- WhatsApp SVG Icon -->
                 <svg class="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
                 </svg>
-                Kirim ke WhatsApp Ahli Gizi
+                Kirim via WhatsApp
             </button>
 
         </form>
     </div>
 
     <footer>
-        &copy; 2015 WA Ahli Gizi. Data Anda dikirim secara langsung & privasi terjaga.
+        <p>&copy; 2023 WA Ahli Gizi. Nutrisionis Terdaftar.</p>
+        <br>
+        <a href="https://satusehat.kemkes.go.id/sdmk/nakes/WA00000887089023" target="_blank" class="footer-link">Cek Data Satu Sehat</a>
     </footer>
 
-    <!-- Toast Element for Error Messages -->
     <div id="toast" class="toast">Pesan error di sini</div>
 
     <script>
-        // Nomor Tujuan Ahli Gizi
-        const TARGET_PHONE = "6281277777454";
+        // --- LOGIC TEMA ---
+        const htmlElement = document.documentElement;
+        const iconSun = document.getElementById('icon-sun');
+        const iconMoon = document.getElementById('icon-moon');
 
-        // Fungsi Hitung Usia
+        function toggleTheme() {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                // Ganti ke Light Mode
+                htmlElement.setAttribute('data-theme', 'light');
+                iconSun.style.display = 'block';
+                iconMoon.style.display = 'none';
+            } else {
+                // Ganti ke Dark Mode
+                htmlElement.setAttribute('data-theme', 'dark');
+                iconSun.style.display = 'none';
+                iconMoon.style.display = 'block';
+            }
+        }
+
+        // Set ikon awal (Default Dark)
+        iconSun.style.display = 'block';
+        iconMoon.style.display = 'none';
+
+        // --- LOGIC APLIKASI ---
+        const TARGET_PHONE = "6281277777454"; // NOMOR TUAAN SUDAH BENAR DISINI
+
         function calculateAge() {
             const birthDateInput = document.getElementById('birthDate').value;
             const ageDisplay = document.getElementById('ageDisplay');
@@ -388,7 +572,6 @@
             }
         }
 
-        // Fungsi Hitung BMI (IMT) Real-time
         function calculateBMI() {
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
@@ -406,28 +589,31 @@
                 let status = '';
                 let color = '';
 
+                // Warna Status (Sama untuk mode apa saja, namun teks menyesuaikan CSS variable)
                 if (bmi < 18.5) {
-                    status = 'Kurus (Underweight)';
-                    color = '#3B82F6';
+                    status = 'Kurus';
+                    color = '#3b82f6';
                 } else if (bmi >= 18.5 && bmi < 24.9) {
                     status = 'Normal';
-                    color = '#10B981';
+                    color = '#10b981';
                 } else if (bmi >= 25 && bmi < 29.9) {
-                    status = 'Gemuk (Overweight)';
-                    color = '#F59E0B';
+                    status = 'Gemuk';
+                    color = '#f59e0b';
                 } else {
                     status = 'Obesitas';
-                    color = '#EF4444';
+                    color = '#ef4444';
                 }
 
                 bmiStatusEl.textContent = status;
                 bmiStatusEl.style.backgroundColor = color;
+                
+                // Warna teks di dalam badge berubah tergantung mode (hitam di gelap, putih di terang)
+                // CSS Variable --status-text-badge menangani ini
             } else {
                 bmiResultBox.style.display = 'none';
             }
         }
 
-        // Fungsi Menampilkan Pesan Error (Toast)
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -437,9 +623,7 @@
             }, 3000);
         }
 
-        // Fungsi Utama: Kirim ke WhatsApp
         function sendToWhatsapp() {
-            // Ambil Data
             const fullName = document.getElementById('fullName').value.trim();
             const gender = document.getElementById('gender').value;
             const birthDate = document.getElementById('birthDate').value;
@@ -450,24 +634,21 @@
             const goal = document.getElementById('goal').value;
             const complaints = document.getElementById('complaints').value.trim(); 
             
-            // Validasi Sederhana
             if (!fullName || !gender || !birthDate || !weight || !height) {
                 showToast("Mohon lengkapi semua data wajib terlebih dahulu!");
                 return;
             }
 
-            // Ambil hasil BMI
             const bmiValue = document.getElementById('bmiValue').textContent;
             const bmiStatus = document.getElementById('bmiStatus').textContent;
             const bmiText = (document.getElementById('bmi-result').style.display === 'block') 
                             ? bmiValue + " (" + bmiStatus + ")" : 'Belum dihitung';
 
-            // Format Pesan menggunakan \n untuk baris baru
             let message = `Halo Kak, saya ingin konsultasi gizi.\n\n` +
                           `*DATA PASIEN*\n` +
                           `-------------------------------\n` +
                           `👤 Nama: ${fullName}\n` +
-                          `bieseks: ${gender}\n` +
+                          `Jenis Kelamin: ${gender}\n` +
                           `📅 Tgl Lahir: ${birthDate}\n` +
                           `🎂 Usia: ${age}\n` +
                           `⚖️ Berat Badan: ${weight} kg\n` +
@@ -485,11 +666,9 @@
                           
                           `Mohon saran dan menu makanannya ya Kak. Terima kasih.`;
 
-            // Gunakan encodeURIComponent agar teks panjang, enter, dan spesial karakter aman
             const encodedMessage = encodeURIComponent(message);
             const url = `https://wa.me/${TARGET_PHONE}?text=${encodedMessage}`;
 
-            // Buka di Tab Baru
             window.open(url, '_blank');
         }
     </script>
